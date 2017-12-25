@@ -1,0 +1,69 @@
+﻿@{
+    ViewBag.Title = "Sudoku";
+}
+
+
+
+
+<div id="refresh">
+    @Html.Action("NewGame", "Home")
+</div>
+
+<div class="row">
+    <div class="col-lg-5">
+        <input type="button" class="btn btn-primary" value="Новая игра" onclick="window.location.reload()" />
+    </div>
+
+    <div class="col-lg-1">
+        <input type="button" class="btn btn-primary" value="Открыть ячейку" title="Выделите ячейку и нажмите кнопку" onclick="showNumber()" />
+    </div>
+
+</div>
+
+    @section scripts{
+        <script type="text/javascript">
+        $(function () {
+            $('.form-control').click(function () {
+                $('.previous').removeClass('previous');
+                var input = $('.focused');
+                input.removeClass('focused');
+                input.addClass('previous');
+                $(this).addClass('focused');
+                $('#refreshResult').empty();
+            });
+            onlyNumbers($('.form-control'));
+        })
+
+        function onlyNumbers(el) {
+
+            el.on("change keyup input click", function () {
+                if (this.value.match(/[^1-9]/g)) {
+                    this.value = this.value.replace(/[^1-9]/g, "");
+                };
+            });
+
+            return false;
+        };
+
+        function showNumber() {
+            var input = $(".focused");
+            var name = input.attr("name");
+            $.ajax({
+                method: 'GET',
+                data: null,
+                url: '@Url.Action("OpenCell", "Home")' + '?cellName=' + name,
+                success: function (num) {
+                    $(".focused").val(num);
+            },
+                error: function (err){
+                console.log(err);
+            }
+            });
+        }
+
+        </script>
+
+
+    }
+
+

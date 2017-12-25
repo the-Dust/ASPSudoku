@@ -1,0 +1,73 @@
+﻿@model Services.SudokuGame.SudokuCell[]
+
+@{
+    ViewBag.Title = "Sudoku";
+}
+
+
+
+<div class="col-md-5">
+    <h1>@ViewBag.Level</h1>
+</div>
+
+
+
+@using (Ajax.BeginForm("CheckGame", "Home", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "refreshResult" }))
+{
+    <table class="table">
+        @{
+            int counter = 0;
+            for (int i = 0; i < 9; i++)
+            {
+                <tr>
+                    @for (int j = 0; j < 9; j++)
+                    {
+                        string inputClass = !Model[counter].IsRed ? "red-input form-control" : "white-input form-control";
+
+                        <td>
+                            <div class="form-group">
+                                <div class="col-xs-8">
+                                    @if (Model[counter].Hidden)
+                                    {
+                                            @Html.TextBoxFor(x => x[counter].Value,
+                                                   new
+                                                   {
+                                                       maxlength = "1",
+                                                       @class = inputClass,
+                                                       autocomplete = "off",
+                                                   })
+                                     }
+                                        else
+                                        {
+                                            @Html.TextBoxFor(x => x[counter].Value,
+                                              new
+                                              {
+                                                  maxlength = "1",
+                                                  @class = inputClass,
+                                                  autocomplete = "off",
+                                                  @readonly = "readonly"
+                                              });
+                                        }
+                                    
+                                    @Html.ValidationMessageFor(x => x[counter].Value)
+                                </div>
+                            </div>
+
+                        </td>
+
+                        counter++;
+                    }
+                </tr>
+            }
+        }
+
+    </table>
+    
+
+        <div class="col-lg-5">
+            <input type="submit" class="btn btn-primary" value="Проверить решение" />
+        </div>
+
+}
+
+
